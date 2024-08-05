@@ -315,6 +315,9 @@ const
   Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileNameA = Everything_IncRunCountFromFileNameA;
 {$ENDIF}
 
+  // Retrieves a Human-Readable error message corresponding to a given error code
+  function  Everything_GetErrorMessage(ACode: Integer): string;
+  // Retrieves the current version of the Everything SDK
   function  Everything_GetVersion: string;
 
 implementation
@@ -470,6 +473,39 @@ function  Everything_IncRunCountFromFileNameW; external EverythingDLL name 'Ever
 // Everything 1.4.1
 function  Everything_IncRunCountFromFileNameA; external EverythingDLL name 'Everything_IncRunCountFromFileNameA';
 
+// Retrieves a Human-Readable error message corresponding to a given error code
+function  Everything_GetErrorMessage(ACode: Integer): string;
+type
+  TEverythingErrorInfo = record
+    Code: Integer;
+    Description: string;
+  end;
+const
+  defEverythingErrorInfos: array[0..7] of TEverythingErrorInfo = (
+    (Code: EVERYTHING_OK;                    Description: 'The operation completed successfully.'),
+    (Code: EVERYTHING_ERROR_MEMORY;          Description: 'Failed to allocate memory for the search query.'),
+    (Code: EVERYTHING_ERROR_IPC;             Description: 'IPC is not available.'),
+    (Code: EVERYTHING_ERROR_REGISTERCLASSEX; Description: 'Failed to register the search query window class.'),
+    (Code: EVERYTHING_ERROR_CREATEWINDOW;    Description: 'Failed to create the search query window.'),
+    (Code: EVERYTHING_ERROR_CREATETHREAD;    Description: 'Failed to create the search query thread.'),
+    (Code: EVERYTHING_ERROR_INVALIDINDEX;    Description: 'Invalid index. The index must be greater or equal to 0 and less than the number of visible results.'),
+    (Code: EVERYTHING_ERROR_INVALIDCALL;     Description: 'Invalid call.')
+  );
+resourcestring
+  rsErrUnKnownErrorFmt  = 'Unknown Error code: %d';
+var
+  I: Integer;
+begin
+  for I := Low(defEverythingErrorInfos) to High(defEverythingErrorInfos) do
+    if defEverythingErrorInfos[I].Code = ACode then
+  begin
+    Result := defEverythingErrorInfos[I].Description;
+    Exit;
+  end;
+  Result := Format(rsErrUnKnownErrorFmt, [ACode]);
+end;
+
+// Retrieves the current version of the Everything SDK
 function  Everything_GetVersion: string;
 begin
   Result := Format('%d.%d.%d.%d', [Everything_GetMajorVersion, Everything_GetMinorVersion, Everything_GetRevision, Everything_GetBuildNumber]);

@@ -74,7 +74,11 @@ begin
   Everything_SetSort(EVERYTHING_SORT_PATH_ASCENDING);
 
   Writeln('Execute Query');
-  Everything_Query(True);
+  if not Everything_Query(True) then
+  begin
+    R := Everything_GetLastError;
+    raise Exception.Create(Everything_GetErrorMessage(R));
+  end;
   Writeln('Result List Request Flags: ', Everything_GetResultListRequestFlags());
 
   C := Everything_GetNumResults();
@@ -114,7 +118,7 @@ begin
     WriteLn('Done.');
   except
     on E: Exception do
-      WriteLn('Error Decompiler: ', E.Message);
+      WriteLn('Error: ', E.Message);
   end;
   ReadLn;
 end.
