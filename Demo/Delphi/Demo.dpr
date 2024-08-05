@@ -1,34 +1,27 @@
-# EverythingSDK
-EverythingSDK is a [Delphi](http://www.embarcadero.com/products/delphi) and [Free Pascal](https://www.freepascal.org/) client library for [Voidtools' Everything](https://www.voidtools.com/) search engine, with the native Everything SDK dll.
+{ ***************************************************** }
+{                                                       }
+{  Pascal language binding for Everything SDK           }
+{                                                       }
+{  Unit Name: Demo                                      }
+{     Author: Lsuper 2024.08.01                         }
+{    Purpose: Demo                                      }
+{    License: Mozilla Public License 2.0                }
+{                                                       }
+{  Copyright (c) 1998-2024 Super Studio                 }
+{                                                       }
+{ ***************************************************** }
 
-Everything is a powerful search engine that can index and search for files, folders, and other data on your Windows system. The official C++ SDK provides a way to access the Everything database and perform searches programmatically. This repository provides a Delphi translation of the C++ SDK, allowing Delphi developers to easily integrate Everything search functionality into their applications.
+program Demo;
 
-Everything service must be running on your machine.
+{$IF CompilerVersion >= 21.0}
+  {$WEAKLINKRTTI ON}
+  {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
+{$IFEND}
 
-## Features
-- Complete translation of Everything's C++ SDK to Delphi.
-- Easy integration with Delphi projects.
-- Supports all major features of the original SDK.
+{$APPTYPE CONSOLE}
 
-## Requirements
-- Delphi 2007 or later.
-- Everything 1.4.1 or later.
+{$R *.res}
 
-## Installation
-To install the EverythingSDK binding, follow these steps:
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/delphilite/EverythingSDK.git
-    ```
-
-2. Add the EverythingSDK\Source directory to the project or IDE's search path.
-3. Make sure Everything is installed and running on your system.
-
-## Usage
-Here's a simple example demonstrating how to use the EverythingSDK in a Delphi application:
-
-```pas
 uses
   SysUtils, Windows, EverythingSDK;
 
@@ -125,18 +118,3 @@ begin
   end;
   ReadLn;
 end.
-```
-
-For more examples based on low-level API, refer to the test cases under the demos directory.
-
-## Documentation
-For more detailed information, refer to the [Everything SDK](https://www.voidtools.com/support/everything/sdk/).
-
-## Contributing
-Contributions are welcome! Please fork this repository and submit pull requests with your improvements.
-
-## License
-This project is licensed under the Mozilla Public License 2.0. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-Special thanks to Voidtools for creating Everything and providing the original SDK.
