@@ -331,6 +331,25 @@ const
   {$MESSAGE Error 'Unsupported platform'}
 {$IFEND}
 
+type
+  TEverythingErrorInfo = record
+    Code: Integer;
+    Description: string;
+  end;
+const
+  defEverythingErrorInfos: array[0..7] of TEverythingErrorInfo = (
+    (Code: EVERYTHING_OK;                    Description: 'The operation completed successfully.'),
+    (Code: EVERYTHING_ERROR_MEMORY;          Description: 'Failed to allocate memory for the search query.'),
+    (Code: EVERYTHING_ERROR_IPC;             Description: 'IPC is not available.'),
+    (Code: EVERYTHING_ERROR_REGISTERCLASSEX; Description: 'Failed to register the search query window class.'),
+    (Code: EVERYTHING_ERROR_CREATEWINDOW;    Description: 'Failed to create the search query window.'),
+    (Code: EVERYTHING_ERROR_CREATETHREAD;    Description: 'Failed to create the search query thread.'),
+    (Code: EVERYTHING_ERROR_INVALIDINDEX;    Description: 'Invalid index. The index must be greater or equal to 0 and less than the number of visible results.'),
+    (Code: EVERYTHING_ERROR_INVALIDCALL;     Description: 'Invalid call.')
+  );
+resourcestring
+  rsErrUnKnownErrorFmt  = 'Unknown Error code: %d';
+
 // Write search state
 procedure Everything_SetSearchW; external EverythingDLL name 'Everything_SetSearchW';
 procedure Everything_SetSearchA; external EverythingDLL name 'Everything_SetSearchA';
@@ -475,24 +494,6 @@ function  Everything_IncRunCountFromFileNameA; external EverythingDLL name 'Ever
 
 // Retrieves a Human-Readable error message corresponding to a given error code
 function  Everything_GetErrorMessage(ACode: Integer): string;
-type
-  TEverythingErrorInfo = record
-    Code: Integer;
-    Description: string;
-  end;
-const
-  defEverythingErrorInfos: array[0..7] of TEverythingErrorInfo = (
-    (Code: EVERYTHING_OK;                    Description: 'The operation completed successfully.'),
-    (Code: EVERYTHING_ERROR_MEMORY;          Description: 'Failed to allocate memory for the search query.'),
-    (Code: EVERYTHING_ERROR_IPC;             Description: 'IPC is not available.'),
-    (Code: EVERYTHING_ERROR_REGISTERCLASSEX; Description: 'Failed to register the search query window class.'),
-    (Code: EVERYTHING_ERROR_CREATEWINDOW;    Description: 'Failed to create the search query window.'),
-    (Code: EVERYTHING_ERROR_CREATETHREAD;    Description: 'Failed to create the search query thread.'),
-    (Code: EVERYTHING_ERROR_INVALIDINDEX;    Description: 'Invalid index. The index must be greater or equal to 0 and less than the number of visible results.'),
-    (Code: EVERYTHING_ERROR_INVALIDCALL;     Description: 'Invalid call.')
-  );
-resourcestring
-  rsErrUnKnownErrorFmt  = 'Unknown Error code: %d';
 var
   I: Integer;
 begin
