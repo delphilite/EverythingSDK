@@ -1,5 +1,5 @@
 # EverythingSDK
-EverythingSDK is a [Delphi](http://www.embarcadero.com/products/delphi) and [Free Pascal](https://www.freepascal.org/) client library for [Voidtools' Everything](https://www.voidtools.com/) search engine, with the native Everything SDK dll.
+EverythingSDK is a [Delphi](http://www.embarcadero.com/products/delphi) client library for [Voidtools' Everything](https://www.voidtools.com/) search engine. It supports both dynamic and static libraries from the native Everything SDK.
 
 Everything is a powerful search engine that can index and search for files, folders, and other data on your Windows system. The official C++ SDK provides a way to access the Everything database and perform searches programmatically. This repository provides a Delphi translation of the C++ SDK, allowing Delphi developers to easily integrate Everything search functionality into their applications.
 
@@ -9,6 +9,8 @@ Everything service must be running on your machine.
 - Complete translation of Everything's C++ SDK to Delphi.
 - Easy integration with Delphi projects.
 - Supports all major features of the original SDK.
+- Supports using static libraries (Everything32.obj/Everything64.obj). By enabling the ET_STATICLINK directive (default)
+- Supports using dynamic libraries (Everything32.dll/Everything64.dll).
 
 ## Requirements
 - Delphi XE2 or later.

@@ -342,9 +342,14 @@ procedure {$IFDEF ET_USE_UNDERSCORE}_memcpy{$ELSE}memcpy{$ENDIF}; cdecl;
 procedure {$IFDEF ET_USE_UNDERSCORE}_memset{$ELSE}memset{$ENDIF}; cdecl;
   external libc name 'memset';
 
-procedure qsort; cdecl; external libc name 'qsort';
-procedure stricmp; cdecl; external libc name '_stricmp';
-procedure wcsicmp; cdecl; external libc name '_wcsicmp';
+procedure {$IFDEF ET_USE_UNDERSCORE}_qsort{$ELSE}qsort{$ENDIF}; cdecl;
+  external libc name 'qsort';
+
+procedure {$IFDEF ET_USE_UNDERSCORE}_stricmp{$ELSE}stricmp{$ENDIF}; cdecl;
+  external libc name '_stricmp';
+
+procedure {$IFDEF ET_USE_UNDERSCORE}_wcsicmp{$ELSE}wcsicmp{$ENDIF}; cdecl;
+  external libc name '_wcsicmp';
 
 // Windows.pas, Reintroduce CreateWindowExW to fix stdcall errors
 const
@@ -371,9 +376,9 @@ procedure CloseServiceHandle; external advapi32 name 'CloseServiceHandle';
 
 const
   // Crt.pas
-  imp_qsort: Pointer = @EverythingSDK.qsort;
-  imp_stricmp: Pointer = @EverythingSDK.stricmp;
-  imp_wcsicmp: Pointer = @EverythingSDK.wcsicmp;
+  imp_qsort: Pointer = @EverythingSDK.{$IFDEF ET_USE_UNDERSCORE}_qsort{$ELSE}qsort{$ENDIF};
+  imp_stricmp: Pointer = @EverythingSDK.{$IFDEF ET_USE_UNDERSCORE}_stricmp{$ELSE}stricmp{$ENDIF};
+  imp_wcsicmp: Pointer = @EverythingSDK.{$IFDEF ET_USE_UNDERSCORE}_wcsicmp{$ELSE}wcsicmp{$ENDIF};
 
   // Windows.pas
   imp_CreateWindowExW: Pointer = @EverythingSDK.CreateWindowExW;
