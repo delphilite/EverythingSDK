@@ -23,10 +23,27 @@
 
 unit EverythingSDK;
 
+// Define ET_STATICLINK enable static library support, otherwise use dynamic link libraries.
+{$DEFINE ET_STATICLINK}
+
+{$IFDEF ET_STATICLINK}
+  {$IFDEF FPC}
+    {$MESSAGE ERROR 'staticlink not supported'}
+  {$ENDIF}
+  {$IFNDEF MSWINDOWS}
+    {$MESSAGE ERROR 'staticlink not supported'}
+  {$ENDIF}
+  {$IFNDEF CPUX64}
+    {$DEFINE ET_USE_UNDERSCORE}
+  {$ENDIF}
+{$ELSE}
+  {$DEFINE ET_USE_EXTNAME}
+{$ENDIF}
+
 interface
 
 uses
-  SysUtils, Windows;
+  Windows;
 
 const
   EVERYTHING_SDK_VERSION                                 = 2; // if not defined, version is 1.
@@ -238,81 +255,62 @@ const
   function  Everything_IncRunCountFromFileNameA(lpFileName: PAnsiChar): DWORD; stdcall;
 
 type
-  // Ansi version types
-  TEverything_SetSearchA = procedure(lpString: PAnsiChar); stdcall;
-  TEverything_GetSearchA = function: PAnsiChar; stdcall;
-  TEverything_QueryA = function(bWait: BOOL): BOOL; stdcall;
+  // Ansi+Unicode version types
+  TEverything_SetSearch = procedure(lpString: PChar); stdcall;
+  TEverything_GetSearch = function: PChar; stdcall;
+  TEverything_Query = function(bWait: BOOL): BOOL; stdcall;
 {
-  TEverything_Query2A = function(bWait: BOOL; pContext: Pointer): BOOL; stdcall;
+  TEverything_Query2 = function(bWait: BOOL; pContext: Pointer): BOOL; stdcall;
 }
-  TEverything_GetResultFileNameA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultPathA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultFullPathNameA = function(dwIndex: DWORD; buf: PAnsiChar; bufsize: DWORD): DWORD; stdcall;
-  TEverything_GetResultExtensionA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultFileListFileNameA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultHighlightedFileNameA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultHighlightedPathA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetResultHighlightedFullPathAndFileNameA = function(dwIndex: DWORD): PAnsiChar; stdcall;
-  TEverything_GetRunCountFromFileNameA = function(lpFileName: PAnsiChar): DWORD; stdcall;
-  TEverything_SetRunCountFromFileNameA = function(lpFileName: PAnsiChar; dwRunCount: DWORD): BOOL; stdcall;
-  TEverything_IncRunCountFromFileNameA = function(lpFileName: PAnsiChar): DWORD; stdcall;
-
-  // Unicode version types
-  TEverything_SetSearchW = procedure(lpString: PWideChar); stdcall;
-  TEverything_GetSearchW = function: PWideChar; stdcall;
-  TEverything_QueryW = function(bWait: BOOL): BOOL; stdcall;
-{
-  TEverything_Query2W = function(bWait: BOOL; pContext: Pointer): BOOL; stdcall;
-}
-  TEverything_GetResultFileNameW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultPathW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultFullPathNameW = function(dwIndex: DWORD; wbuf: PWideChar; wbuf_size_in_wchars: DWORD): DWORD; stdcall;
-  TEverything_GetResultExtensionW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultFileListFileNameW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultHighlightedFileNameW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultHighlightedPathW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetResultHighlightedFullPathAndFileNameW = function(dwIndex: DWORD): PWideChar; stdcall;
-  TEverything_GetRunCountFromFileNameW = function(lpFileName: PWideChar): DWORD; stdcall;
-  TEverything_SetRunCountFromFileNameW = function(lpFileName: PWideChar; dwRunCount: DWORD): BOOL; stdcall;
-  TEverything_IncRunCountFromFileNameW = function(lpFileName: PWideChar): DWORD; stdcall;
+  TEverything_GetResultFileName = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultPath = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultFullPathName = function(dwIndex: DWORD; buf: PChar; bufsize: DWORD): DWORD; stdcall;
+  TEverything_GetResultExtension = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultFileListFileName = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultHighlightedFileName = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultHighlightedPath = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetResultHighlightedFullPathAndFileName = function(dwIndex: DWORD): PChar; stdcall;
+  TEverything_GetRunCountFromFileName = function(lpFileName: PChar): DWORD; stdcall;
+  TEverything_SetRunCountFromFileName = function(lpFileName: PChar; dwRunCount: DWORD): BOOL; stdcall;
+  TEverything_IncRunCountFromFileName = function(lpFileName: PChar): DWORD; stdcall;
 
 const
 {$IFDEF UNICODE}
-  Everything_SetSearch: TEverything_SetSearchW = Everything_SetSearchW;
-  Everything_GetSearch: TEverything_GetSearchW = Everything_GetSearchW;
-  Everything_Query: TEverything_QueryW = Everything_QueryW;
+  Everything_SetSearch: TEverything_SetSearch = Everything_SetSearchW;
+  Everything_GetSearch: TEverything_GetSearch = Everything_GetSearchW;
+  Everything_Query: TEverything_Query = Everything_QueryW;
 {
-  Everything_Query2: TEverything_Query2W = Everything_Query2W;
+  Everything_Query2: TEverything_Query2 = Everything_Query2W;
 }
-  Everything_GetResultFileName: TEverything_GetResultFileNameW = Everything_GetResultFileNameW;
-  Everything_GetResultPath: TEverything_GetResultPathW = Everything_GetResultPathW;
-  Everything_GetResultFullPathName: TEverything_GetResultFullPathNameW = Everything_GetResultFullPathNameW;
-  Everything_GetResultExtension: TEverything_GetResultExtensionW = Everything_GetResultExtensionW;
-  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileNameW = Everything_GetResultFileListFileNameW;
-  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileNameW = Everything_GetResultHighlightedFileNameW;
-  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPathW = Everything_GetResultHighlightedPathW;
-  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileNameW = Everything_GetResultHighlightedFullPathAndFileNameW;
-  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileNameW = Everything_GetRunCountFromFileNameW;
-  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileNameW = Everything_SetRunCountFromFileNameW;
-  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileNameW = Everything_IncRunCountFromFileNameW;
+  Everything_GetResultFileName: TEverything_GetResultFileName = Everything_GetResultFileNameW;
+  Everything_GetResultPath: TEverything_GetResultPath = Everything_GetResultPathW;
+  Everything_GetResultFullPathName: TEverything_GetResultFullPathName = Everything_GetResultFullPathNameW;
+  Everything_GetResultExtension: TEverything_GetResultExtension = Everything_GetResultExtensionW;
+  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileName = Everything_GetResultFileListFileNameW;
+  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileName = Everything_GetResultHighlightedFileNameW;
+  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPath = Everything_GetResultHighlightedPathW;
+  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileName = Everything_GetResultHighlightedFullPathAndFileNameW;
+  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileName = Everything_GetRunCountFromFileNameW;
+  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileName = Everything_SetRunCountFromFileNameW;
+  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileName = Everything_IncRunCountFromFileNameW;
 {$ELSE}
-  Everything_SetSearch: TEverything_SetSearchA = Everything_SetSearchA;
-  Everything_GetSearch: TEverything_GetSearchA = Everything_GetSearchA;
-  Everything_Query: TEverything_QueryA = Everything_QueryA;
+  Everything_SetSearch: TEverything_SetSearch = Everything_SetSearchA;
+  Everything_GetSearch: TEverything_GetSearch = Everything_GetSearchA;
+  Everything_Query: TEverything_Query = Everything_QueryA;
 {
-  Everything_Query2: TEverything_Query2A = Everything_Query2A;
+  Everything_Query2: TEverything_Query2 = Everything_Query2A;
 }
-  Everything_GetResultFileName: TEverything_GetResultFileNameA = Everything_GetResultFileNameA;
-  Everything_GetResultPath: TEverything_GetResultPathA = Everything_GetResultPathA;
-  Everything_GetResultFullPathName: TEverything_GetResultFullPathNameA = Everything_GetResultFullPathNameA;
-  Everything_GetResultExtension: TEverything_GetResultExtensionA = Everything_GetResultExtensionA;
-  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileNameA = Everything_GetResultFileListFileNameA;
-  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileNameA = Everything_GetResultHighlightedFileNameA;
-  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPathA = Everything_GetResultHighlightedPathA;
-  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileNameA = Everything_GetResultHighlightedFullPathAndFileNameA;
-  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileNameA = Everything_GetRunCountFromFileNameA;
-  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileNameA = Everything_SetRunCountFromFileNameA;
-  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileNameA = Everything_IncRunCountFromFileNameA;
+  Everything_GetResultFileName: TEverything_GetResultFileName = Everything_GetResultFileNameA;
+  Everything_GetResultPath: TEverything_GetResultPath = Everything_GetResultPathA;
+  Everything_GetResultFullPathName: TEverything_GetResultFullPathName = Everything_GetResultFullPathNameA;
+  Everything_GetResultExtension: TEverything_GetResultExtension = Everything_GetResultExtensionA;
+  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileName = Everything_GetResultFileListFileNameA;
+  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileName = Everything_GetResultHighlightedFileNameA;
+  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPath = Everything_GetResultHighlightedPathA;
+  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileName = Everything_GetResultHighlightedFullPathAndFileNameA;
+  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileName = Everything_GetRunCountFromFileNameA;
+  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileName = Everything_SetRunCountFromFileNameA;
+  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileName = Everything_IncRunCountFromFileNameA;
 {$ENDIF}
 
   // Retrieves a Human-Readable error message corresponding to a given error code
@@ -321,6 +319,116 @@ const
   function  Everything_GetVersion: string;
 
 implementation
+
+{$IFDEF ET_STATICLINK}
+
+// Link static libraries.
+{$IFDEF CPUX86}
+  // Win32 from Ref\vc\EverythingLib.vcxproj + VS2010 & objconv
+  {$L 'Everything32.obj'}
+{$ENDIF CPUX86}
+{$IFDEF CPUX64}
+  // Win64 from Ref\vc\EverythingLib.vcxproj + VS2010 & objconv
+  {$L 'Everything64.obj'}
+{$ENDIF CPUX64}
+
+// Link static library dependency functions.
+const
+  libc = 'msvcrt.dll';
+
+procedure {$IFDEF ET_USE_UNDERSCORE}_memcpy{$ELSE}memcpy{$ENDIF}; cdecl;
+  external libc name 'memcpy';
+
+procedure {$IFDEF ET_USE_UNDERSCORE}_memset{$ELSE}memset{$ENDIF}; cdecl;
+  external libc name 'memset';
+
+procedure qsort; cdecl; external libc name 'qsort';
+procedure stricmp; cdecl; external libc name '_stricmp';
+procedure wcsicmp; cdecl; external libc name '_wcsicmp';
+
+// Windows.pas, Reintroduce CreateWindowExW to fix stdcall errors
+const
+  user32  = 'user32.dll';
+
+procedure CreateWindowExW; external user32 name 'CreateWindowExW';
+
+// ShellAPI.pas, Avoid referencing unnecessary units
+const
+  shell32 = 'shell32.dll';
+
+procedure ShellExecuteExW; external shell32 name 'ShellExecuteExW';
+
+// WinSvc.pas, Avoid referencing unnecessary units
+const
+  advapi32 = 'advapi32.dll';
+
+procedure OpenSCManagerW; external advapi32 name 'OpenSCManagerW';
+procedure OpenServiceW; external advapi32 name 'OpenServiceW';
+procedure QueryServiceConfigW; external advapi32 name 'QueryServiceConfigW';
+procedure QueryServiceStatusEx; external advapi32 name 'QueryServiceStatusEx';
+procedure StartServiceW; external advapi32 name 'StartServiceW';
+procedure CloseServiceHandle; external advapi32 name 'CloseServiceHandle';
+
+const
+  // Crt.pas
+  imp_qsort: Pointer = @EverythingSDK.qsort;
+  imp_stricmp: Pointer = @EverythingSDK.stricmp;
+  imp_wcsicmp: Pointer = @EverythingSDK.wcsicmp;
+
+  // Windows.pas
+  imp_CreateWindowExW: Pointer = @EverythingSDK.CreateWindowExW;
+
+  imp_DefWindowProcW: Pointer = @Windows.DefWindowProcW;
+  imp_DestroyWindow: Pointer = @Windows.DestroyWindow;
+  imp_DispatchMessageW: Pointer = @Windows.DispatchMessageW;
+  imp_FindWindowW: Pointer = @Windows.FindWindowW;
+  imp_GetClassInfoExW: Pointer = @Windows.GetClassInfoExW;
+  imp_GetMessageW: Pointer = @Windows.GetMessageW;
+  imp_GetWindowThreadProcessId: Pointer = @Windows.GetWindowThreadProcessId;
+  imp_PeekMessageW: Pointer = @Windows.PeekMessageW;
+  imp_PostQuitMessage: Pointer = @Windows.PostQuitMessage;
+  imp_RegisterClassExW: Pointer = @Windows.RegisterClassExW;
+  imp_SendMessageW: Pointer = @Windows.SendMessageW;
+  imp_TranslateMessage: Pointer = @Windows.TranslateMessage;
+  imp_WaitMessage: Pointer = @Windows.WaitMessage;
+
+  imp_CloseHandle: Pointer = @Windows.CloseHandle;
+  imp_CreateThread: Pointer = @Windows.CreateThread;
+  imp_DeleteCriticalSection: Pointer = @Windows.DeleteCriticalSection;
+  imp_EnterCriticalSection: Pointer = @Windows.EnterCriticalSection;
+  imp_GetFileAttributesW: Pointer = @Windows.GetFileAttributesW;
+  imp_GetModuleHandleW: Pointer = @Windows.GetModuleHandleW;
+  imp_GetProcAddress: Pointer = @Windows.GetProcAddress;
+  imp_GetProcessHeap: Pointer = @Windows.GetProcessHeap;
+  imp_HeapAlloc: Pointer = @Windows.HeapAlloc;
+  imp_HeapFree: Pointer = @Windows.HeapFree;
+  imp_InitializeCriticalSection: Pointer = @Windows.InitializeCriticalSection;
+  imp_LeaveCriticalSection: Pointer = @Windows.LeaveCriticalSection;
+  imp_LoadLibraryW: Pointer = @Windows.LoadLibraryW;
+  imp_MultiByteToWideChar: Pointer = @Windows.MultiByteToWideChar;
+  imp_OpenProcess: Pointer = @Windows.OpenProcess;
+  imp_Sleep: Pointer = @Windows.Sleep;
+  imp_WaitForSingleObject: Pointer = @Windows.WaitForSingleObject;
+  imp_WideCharToMultiByte: Pointer = @Windows.WideCharToMultiByte;
+
+  imp_InterlockedExchangeAdd: Pointer = @Windows.InterlockedExchangeAdd;
+  imp_InterlockedExchange: Pointer = @Windows.InterlockedExchange;
+  imp_InterlockedCompareExchange: Pointer = @Windows.InterlockedCompareExchange;
+  imp_InterlockedCompareExchange64: Pointer = @Windows.InterlockedCompareExchange64;
+  imp_InterlockedIncrement: Pointer = @Windows.InterlockedIncrement;
+
+  // ShellAPI.pas
+  imp_ShellExecuteExW: Pointer = @EverythingSDK.ShellExecuteExW;
+
+  // WinSvc.pas
+  imp_OpenSCManagerW: Pointer = @EverythingSDK.OpenSCManagerW;
+  imp_OpenServiceW: Pointer = @EverythingSDK.OpenServiceW;
+  imp_CloseServiceHandle: Pointer = @EverythingSDK.CloseServiceHandle;
+  imp_QueryServiceConfigW: Pointer = @EverythingSDK.QueryServiceConfigW;
+  imp_QueryServiceStatusEx: Pointer = @EverythingSDK.QueryServiceStatusEx;
+  imp_StartServiceW: Pointer = @EverythingSDK.StartServiceW;
+
+{$ELSE ET_STATICLINK}
 
 const
 {$IF Defined(WIN32)}
@@ -331,11 +439,14 @@ const
   {$MESSAGE Error 'Unsupported platform'}
 {$IFEND}
 
+{$ENDIF ET_STATICLINK}
+
 type
   TEverythingErrorInfo = record
     Code: Integer;
     Description: string;
   end;
+
 const
   defEverythingErrorInfos: array[0..7] of TEverythingErrorInfo = (
     (Code: EVERYTHING_OK;                    Description: 'The operation completed successfully.'),
@@ -347,153 +458,164 @@ const
     (Code: EVERYTHING_ERROR_INVALIDINDEX;    Description: 'Invalid index. The index must be greater or equal to 0 and less than the number of visible results.'),
     (Code: EVERYTHING_ERROR_INVALIDCALL;     Description: 'Invalid call.')
   );
+
 resourcestring
-  rsErrUnKnownErrorFmt  = 'Unknown Error code: %d';
+  rsErrUnKnownErrorPrex  = 'Unknown Error code: ';
 
 // Write search state
-procedure Everything_SetSearchW; external EverythingDLL name 'Everything_SetSearchW';
-procedure Everything_SetSearchA; external EverythingDLL name 'Everything_SetSearchA';
-procedure Everything_SetMatchPath; external EverythingDLL name 'Everything_SetMatchPath';
-procedure Everything_SetMatchCase; external EverythingDLL name 'Everything_SetMatchCase';
-procedure Everything_SetMatchWholeWord; external EverythingDLL name 'Everything_SetMatchWholeWord';
-procedure Everything_SetRegex; external EverythingDLL name 'Everything_SetRegex';
-procedure Everything_SetMax; external EverythingDLL name 'Everything_SetMax';
-procedure Everything_SetOffset; external EverythingDLL name 'Everything_SetOffset';
-procedure Everything_SetReplyWindow; external EverythingDLL name 'Everything_SetReplyWindow';
-procedure Everything_SetReplyID; external EverythingDLL name 'Everything_SetReplyID';
-procedure Everything_SetSort; external EverythingDLL name 'Everything_SetSort';
-procedure Everything_SetRequestFlags; external EverythingDLL name 'Everything_SetRequestFlags';
+procedure Everything_SetSearchW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetSearchW';
+procedure Everything_SetSearchA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetSearchA';
+procedure Everything_SetMatchPath; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetMatchPath';
+procedure Everything_SetMatchCase; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetMatchCase';
+procedure Everything_SetMatchWholeWord; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetMatchWholeWord';
+procedure Everything_SetRegex; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetRegex';
+procedure Everything_SetMax; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetMax';
+procedure Everything_SetOffset; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetOffset';
+procedure Everything_SetReplyWindow; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetReplyWindow';
+procedure Everything_SetReplyID; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetReplyID';
+procedure Everything_SetSort; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetSort';
+procedure Everything_SetRequestFlags; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetRequestFlags';
 
 // Read search state
-function  Everything_GetMatchPath; external EverythingDLL name 'Everything_GetMatchPath';
-function  Everything_GetMatchCase; external EverythingDLL name 'Everything_GetMatchCase';
-function  Everything_GetMatchWholeWord; external EverythingDLL name 'Everything_GetMatchWholeWord';
-function  Everything_GetRegex; external EverythingDLL name 'Everything_GetRegex';
-function  Everything_GetMax; external EverythingDLL name 'Everything_GetMax';
-function  Everything_GetOffset; external EverythingDLL name 'Everything_GetOffset';
-function  Everything_GetSearchA; external EverythingDLL name 'Everything_GetSearchA';
-function  Everything_GetSearchW; external EverythingDLL name 'Everything_GetSearchW';
-function  Everything_GetLastError; external EverythingDLL name 'Everything_GetLastError';
-function  Everything_GetReplyWindow; external EverythingDLL name 'Everything_GetReplyWindow';
-function  Everything_GetReplyID; external EverythingDLL name 'Everything_GetReplyID';
-function  Everything_GetSort; external EverythingDLL name 'Everything_GetSort';
-function  Everything_GetRequestFlags; external EverythingDLL name 'Everything_GetRequestFlags';
+function  Everything_GetMatchPath; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMatchPath';
+function  Everything_GetMatchCase; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMatchCase';
+function  Everything_GetMatchWholeWord; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMatchWholeWord';
+function  Everything_GetRegex; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetRegex';
+function  Everything_GetMax; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMax';
+function  Everything_GetOffset; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetOffset';
+function  Everything_GetSearchA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetSearchA';
+function  Everything_GetSearchW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetSearchW';
+function  Everything_GetLastError; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetLastError';
+function  Everything_GetReplyWindow; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetReplyWindow';
+function  Everything_GetReplyID; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetReplyID';
+function  Everything_GetSort; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetSort';
+function  Everything_GetRequestFlags; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetRequestFlags';
 
 // Execute query
-function  Everything_QueryA; external EverythingDLL name 'Everything_QueryA';
-function  Everything_QueryW; external EverythingDLL name 'Everything_QueryW';
+function  Everything_QueryA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_QueryA';
+function  Everything_QueryW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_QueryW';
 
 // Query reply
-function  Everything_IsQueryReply; external EverythingDLL name 'Everything_IsQueryReply';
+function  Everything_IsQueryReply; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsQueryReply';
 
 // Write result state
-procedure Everything_SortResultsByPath; external EverythingDLL name 'Everything_SortResultsByPath';
+procedure Everything_SortResultsByPath; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SortResultsByPath';
 
 // Read result state
-function  Everything_GetNumFileResults; external EverythingDLL name 'Everything_GetNumFileResults';
-function  Everything_GetNumFolderResults; external EverythingDLL name 'Everything_GetNumFolderResults';
-function  Everything_GetNumResults; external EverythingDLL name 'Everything_GetNumResults';
-function  Everything_GetTotFileResults; external EverythingDLL name 'Everything_GetTotFileResults';
-function  Everything_GetTotFolderResults; external EverythingDLL name 'Everything_GetTotFolderResults';
-function  Everything_GetTotResults; external EverythingDLL name 'Everything_GetTotResults';
-function  Everything_IsVolumeResult; external EverythingDLL name 'Everything_IsVolumeResult';
-function  Everything_IsFolderResult; external EverythingDLL name 'Everything_IsFolderResult';
-function  Everything_IsFileResult; external EverythingDLL name 'Everything_IsFileResult';
-function  Everything_GetResultFileNameW; external EverythingDLL name 'Everything_GetResultFileNameW';
-function  Everything_GetResultFileNameA; external EverythingDLL name 'Everything_GetResultFileNameA';
-function  Everything_GetResultPathW; external EverythingDLL name 'Everything_GetResultPathW';
-function  Everything_GetResultPathA; external EverythingDLL name 'Everything_GetResultPathA';
-function  Everything_GetResultFullPathNameA; external EverythingDLL name 'Everything_GetResultFullPathNameA';
-function  Everything_GetResultFullPathNameW; external EverythingDLL name 'Everything_GetResultFullPathNameW';
+function  Everything_GetNumFileResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetNumFileResults';
+function  Everything_GetNumFolderResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetNumFolderResults';
+function  Everything_GetNumResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetNumResults';
+function  Everything_GetTotFileResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetTotFileResults';
+function  Everything_GetTotFolderResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetTotFolderResults';
+function  Everything_GetTotResults; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetTotResults';
+function  Everything_IsVolumeResult; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsVolumeResult';
+function  Everything_IsFolderResult; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsFolderResult';
+function  Everything_IsFileResult; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsFileResult';
+function  Everything_GetResultFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFileNameW';
+function  Everything_GetResultFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFileNameA';
+function  Everything_GetResultPathW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultPathW';
+function  Everything_GetResultPathA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultPathA';
+function  Everything_GetResultFullPathNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFullPathNameA';
+function  Everything_GetResultFullPathNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFullPathNameW';
 // Everything 1.4.1
-function  Everything_GetResultListSort; external EverythingDLL name 'Everything_GetResultListSort';
+function  Everything_GetResultListSort; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultListSort';
 // Everything 1.4.1
-function  Everything_GetResultListRequestFlags; external EverythingDLL name 'Everything_GetResultListRequestFlags';
+function  Everything_GetResultListRequestFlags; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultListRequestFlags';
 // Everything 1.4.1
-function  Everything_GetResultExtensionW; external EverythingDLL name 'Everything_GetResultExtensionW';
+function  Everything_GetResultExtensionW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultExtensionW';
 // Everything 1.4.1
-function  Everything_GetResultExtensionA; external EverythingDLL name 'Everything_GetResultExtensionA';
+function  Everything_GetResultExtensionA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultExtensionA';
 // Everything 1.4.1
-function  Everything_GetResultSize; external EverythingDLL name 'Everything_GetResultSize';
+function  Everything_GetResultSize; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultSize';
 // Everything 1.4.1
-function  Everything_GetResultDateCreated; external EverythingDLL name 'Everything_GetResultDateCreated';
+function  Everything_GetResultDateCreated; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultDateCreated';
 // Everything 1.4.1
-function  Everything_GetResultDateModified; external EverythingDLL name 'Everything_GetResultDateModified';
+function  Everything_GetResultDateModified; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultDateModified';
 // Everything 1.4.1
-function  Everything_GetResultDateAccessed; external EverythingDLL name 'Everything_GetResultDateAccessed';
+function  Everything_GetResultDateAccessed; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultDateAccessed';
 // Everything 1.4.1
-function  Everything_GetResultAttributes; external EverythingDLL name 'Everything_GetResultAttributes';
+function  Everything_GetResultAttributes; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultAttributes';
 // Everything 1.4.1
-function  Everything_GetResultFileListFileNameW; external EverythingDLL name 'Everything_GetResultFileListFileNameW';
+function  Everything_GetResultFileListFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFileListFileNameW';
 // Everything 1.4.1
-function  Everything_GetResultFileListFileNameA; external EverythingDLL name 'Everything_GetResultFileListFileNameA';
+function  Everything_GetResultFileListFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultFileListFileNameA';
 // Everything 1.4.1
-function  Everything_GetResultRunCount; external EverythingDLL name 'Everything_GetResultRunCount';
-function  Everything_GetResultDateRun; external EverythingDLL name 'Everything_GetResultDateRun';
-function  Everything_GetResultDateRecentlyChanged; external EverythingDLL name 'Everything_GetResultDateRecentlyChanged';
+function  Everything_GetResultRunCount; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultRunCount';
+function  Everything_GetResultDateRun; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultDateRun';
+function  Everything_GetResultDateRecentlyChanged; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultDateRecentlyChanged';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedFileNameW; external EverythingDLL name 'Everything_GetResultHighlightedFileNameW';
+function  Everything_GetResultHighlightedFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedFileNameW';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedFileNameA; external EverythingDLL name 'Everything_GetResultHighlightedFileNameA';
+function  Everything_GetResultHighlightedFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedFileNameA';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedPathW; external EverythingDLL name 'Everything_GetResultHighlightedPathW';
+function  Everything_GetResultHighlightedPathW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedPathW';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedPathA; external EverythingDLL name 'Everything_GetResultHighlightedPathA';
+function  Everything_GetResultHighlightedPathA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedPathA';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedFullPathAndFileNameW; external EverythingDLL name 'Everything_GetResultHighlightedFullPathAndFileNameW';
+function  Everything_GetResultHighlightedFullPathAndFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedFullPathAndFileNameW';
 // Everything 1.4.1
-function  Everything_GetResultHighlightedFullPathAndFileNameA; external EverythingDLL name 'Everything_GetResultHighlightedFullPathAndFileNameA';
+function  Everything_GetResultHighlightedFullPathAndFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetResultHighlightedFullPathAndFileNameA';
 
 // Reset state and free any allocated memory
-procedure Everything_Reset; external EverythingDLL name 'Everything_Reset';
-procedure Everything_CleanUp; external EverythingDLL name 'Everything_CleanUp';
+procedure Everything_Reset; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_Reset';
+procedure Everything_CleanUp; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_CleanUp';
 
-function  Everything_GetMajorVersion; external EverythingDLL name 'Everything_GetMajorVersion';
-function  Everything_GetMinorVersion; external EverythingDLL name 'Everything_GetMinorVersion';
-function  Everything_GetRevision; external EverythingDLL name 'Everything_GetRevision';
-function  Everything_GetBuildNumber; external EverythingDLL name 'Everything_GetBuildNumber';
-function  Everything_Exit: BOOL; external EverythingDLL name 'Everything_Exit';
-function  Everything_MSIExitAndStopService; external EverythingDLL name 'Everything_MSIExitAndStopService';
-function  Everything_MSIStartService; external EverythingDLL name 'Everything_MSIStartService';
+function  Everything_GetMajorVersion; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMajorVersion';
+function  Everything_GetMinorVersion; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetMinorVersion';
+function  Everything_GetRevision; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetRevision';
+function  Everything_GetBuildNumber; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetBuildNumber';
+function  Everything_Exit: BOOL; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_Exit';
+function  Everything_MSIExitAndStopService; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_MSIExitAndStopService';
+function  Everything_MSIStartService; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_MSIStartService';
 
 // Everything 1.4.1
-function  Everything_IsDBLoaded; external EverythingDLL name 'Everything_IsDBLoaded';
+function  Everything_IsDBLoaded; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsDBLoaded';
 // Everything 1.4.1
-function  Everything_IsAdmin; external EverythingDLL name 'Everything_IsAdmin';
+function  Everything_IsAdmin; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsAdmin';
 // Everything 1.4.1
-function  Everything_IsAppData; external EverythingDLL name 'Everything_IsAppData';
+function  Everything_IsAppData; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsAppData';
 // Everything 1.4.1
-function  Everything_RebuildDB; external EverythingDLL name 'Everything_RebuildDB';
+function  Everything_RebuildDB; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_RebuildDB';
 // Everything 1.4.1
-function  Everything_UpdateAllFolderIndexes; external EverythingDLL name 'Everything_UpdateAllFolderIndexes';
+function  Everything_UpdateAllFolderIndexes; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_UpdateAllFolderIndexes';
 // Everything 1.4.1
-function  Everything_SaveDB; external EverythingDLL name 'Everything_SaveDB';
+function  Everything_SaveDB; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SaveDB';
 // Everything 1.4.1
-function  Everything_SaveRunHistory; external EverythingDLL name 'Everything_SaveRunHistory';
+function  Everything_SaveRunHistory; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SaveRunHistory';
 // Everything 1.4.1
-function  Everything_DeleteRunHistory; external EverythingDLL name 'Everything_DeleteRunHistory';
+function  Everything_DeleteRunHistory; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_DeleteRunHistory';
 // Everything 1.4.1
-function  Everything_GetTargetMachine; external EverythingDLL name 'Everything_GetTargetMachine';
+function  Everything_GetTargetMachine; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetTargetMachine';
 // Everything 1.4.1.859
-function  Everything_IsFastSort; external EverythingDLL name 'Everything_IsFastSort';
+function  Everything_IsFastSort; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsFastSort';
 // Everything 1.4.1.859
-function  Everything_IsFileInfoIndexed; external EverythingDLL name 'Everything_IsFileInfoIndexed';
+function  Everything_IsFileInfoIndexed; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IsFileInfoIndexed';
 
 // Everything 1.4.1
-function  Everything_GetRunCountFromFileNameW; external EverythingDLL name 'Everything_GetRunCountFromFileNameW';
+function  Everything_GetRunCountFromFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetRunCountFromFileNameW';
 // Everything 1.4.1
-function  Everything_GetRunCountFromFileNameA; external EverythingDLL name 'Everything_GetRunCountFromFileNameA';
+function  Everything_GetRunCountFromFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_GetRunCountFromFileNameA';
 // Everything 1.4.1
-function  Everything_SetRunCountFromFileNameW; external EverythingDLL name 'Everything_SetRunCountFromFileNameW';
+function  Everything_SetRunCountFromFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetRunCountFromFileNameW';
 // Everything 1.4.1
-function  Everything_SetRunCountFromFileNameA; external EverythingDLL name 'Everything_SetRunCountFromFileNameA';
+function  Everything_SetRunCountFromFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_SetRunCountFromFileNameA';
 // Everything 1.4.1
-function  Everything_IncRunCountFromFileNameW; external EverythingDLL name 'Everything_IncRunCountFromFileNameW';
+function  Everything_IncRunCountFromFileNameW; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IncRunCountFromFileNameW';
 // Everything 1.4.1
-function  Everything_IncRunCountFromFileNameA; external EverythingDLL name 'Everything_IncRunCountFromFileNameA';
+function  Everything_IncRunCountFromFileNameA; external {$IFDEF ET_USE_EXTNAME}EverythingDLL{$ENDIF} name 'Everything_IncRunCountFromFileNameA';
 
 // Retrieves a Human-Readable error message corresponding to a given error code
 function  Everything_GetErrorMessage(ACode: Integer): string;
+
+  function IntToStr(const Value: Integer): string;
+  var
+    aList: array[0..0] of Integer;
+    sBuf: array[0..11] of Char;
+  begin
+    aList[0] := Value;
+    wvsprintf(sBuf, '%d', PChar(@aList));
+    Result := string(sBuf);
+  end;
 var
   I: Integer;
 begin
@@ -503,13 +625,22 @@ begin
     Result := defEverythingErrorInfos[I].Description;
     Exit;
   end;
-  Result := Format(rsErrUnKnownErrorFmt, [ACode]);
+  Result := rsErrUnKnownErrorPrex + IntToStr(ACode);
 end;
 
 // Retrieves the current version of the Everything SDK
 function  Everything_GetVersion: string;
+var
+  aList: array[0..3] of Integer;
+  sBuf: array[0..63] of Char;
 begin
-  Result := Format('%d.%d.%d.%d', [Everything_GetMajorVersion, Everything_GetMinorVersion, Everything_GetRevision, Everything_GetBuildNumber]);
+  aList[0] := Everything_GetMajorVersion;
+  aList[1] := Everything_GetMinorVersion;
+  aList[2] := Everything_GetRevision;
+  aList[3] := Everything_GetBuildNumber;
+
+  wvsprintf(sBuf, '%d.%d.%d.%d', PChar(@aList));
+  Result := string(sBuf);
 end;
 
 end.

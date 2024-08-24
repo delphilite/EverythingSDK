@@ -84,7 +84,8 @@ begin
   C := Everything_GetNumResults();
   Writeln('Result List Count: ', C);
 
-  for I := 0 to C - 1 do
+  if C > 0 then
+    for I := 0 to C - 1 do
   begin
     SetLength(fileName, MAX_PATH);
     R := Everything_GetResultFullPathName(I, PChar(fileName), MAX_PATH);
@@ -121,4 +122,5 @@ begin
       WriteLn('Error: ', E.Message);
   end;
   ReadLn;
+  Everything_CleanUp;
 end.

@@ -11,7 +11,7 @@ Everything service must be running on your machine.
 - Supports all major features of the original SDK.
 
 ## Requirements
-- Delphi 2007 or later.
+- Delphi XE2 or later.
 - Everything 1.4.1 or later.
 
 ## Installation
@@ -91,7 +91,8 @@ begin
   C := Everything_GetNumResults();
   Writeln('Result List Count: ', C);
 
-  for I := 0 to C - 1 do
+  if C > 0 then
+    for I := 0 to C - 1 do
   begin
     SetLength(fileName, MAX_PATH);
     R := Everything_GetResultFullPathName(I, PChar(fileName), MAX_PATH);
@@ -128,6 +129,7 @@ begin
       WriteLn('Error: ', E.Message);
   end;
   ReadLn;
+  Everything_CleanUp;
 end.
 ```
 
