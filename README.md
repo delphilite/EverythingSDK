@@ -9,8 +9,9 @@ Everything service must be running on your machine.
 - Complete translation of Everything's C++ SDK to Delphi.
 - Easy integration with Delphi projects.
 - Supports all major features of the original SDK.
-- Supports using static libraries (Everything32.obj/Everything64.obj). By enabling the ET_STATICLINK directive (default)
+- Supports using static libraries (Everything32.obj/Everything64.obj). By enabling the ET_STATICLINK directive (default).
 - Supports using dynamic libraries (Everything32.dll/Everything64.dll).
+- Supports using the Everything IPC (EverythingIPC.pas+EverythingImpl.pas). Reference EverythingImpl instead of EverythingSDK, without requiring any DLL or OBJ.
 
 ## Requirements
 - Delphi XE2 or later.
@@ -32,7 +33,7 @@ Here's a simple example demonstrating how to use the EverythingSDK in a Delphi a
 
 ```pas
 uses
-  SysUtils, Windows, EverythingSDK;
+  SysUtils, Windows, EverythingSDK; { or EverythingImpl instead of EverythingSDK }
 
 function FileTimeToDateTime(const AFileTime: TFileTime): TDateTime;
 var

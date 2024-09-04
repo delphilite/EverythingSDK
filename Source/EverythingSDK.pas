@@ -254,6 +254,11 @@ const
   // Everything 1.4.1
   function  Everything_IncRunCountFromFileNameA(lpFileName: PAnsiChar): DWORD; stdcall;
 
+  // Retrieves a Human-Readable error message corresponding to a given error code
+  function  Everything_GetErrorMessage(ACode: Integer): string;
+  // Retrieves the current version of the Everything SDK
+  function  Everything_GetVersion: string;
+
 type
   // Ansi+Unicode version types
   TEverything_SetSearch = procedure(lpString: PChar); stdcall;
@@ -275,48 +280,24 @@ type
   TEverything_IncRunCountFromFileName = function(lpFileName: PChar): DWORD; stdcall;
 
 const
-{$IFDEF UNICODE}
-  Everything_SetSearch: TEverything_SetSearch = Everything_SetSearchW;
-  Everything_GetSearch: TEverything_GetSearch = Everything_GetSearchW;
-  Everything_Query: TEverything_Query = Everything_QueryW;
-{
-  Everything_Query2: TEverything_Query2 = Everything_Query2W;
-}
-  Everything_GetResultFileName: TEverything_GetResultFileName = Everything_GetResultFileNameW;
-  Everything_GetResultPath: TEverything_GetResultPath = Everything_GetResultPathW;
-  Everything_GetResultFullPathName: TEverything_GetResultFullPathName = Everything_GetResultFullPathNameW;
-  Everything_GetResultExtension: TEverything_GetResultExtension = Everything_GetResultExtensionW;
-  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileName = Everything_GetResultFileListFileNameW;
-  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileName = Everything_GetResultHighlightedFileNameW;
-  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPath = Everything_GetResultHighlightedPathW;
-  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileName = Everything_GetResultHighlightedFullPathAndFileNameW;
-  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileName = Everything_GetRunCountFromFileNameW;
-  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileName = Everything_SetRunCountFromFileNameW;
-  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileName = Everything_IncRunCountFromFileNameW;
-{$ELSE}
-  Everything_SetSearch: TEverything_SetSearch = Everything_SetSearchA;
-  Everything_GetSearch: TEverything_GetSearch = Everything_GetSearchA;
-  Everything_Query: TEverything_Query = Everything_QueryA;
-{
-  Everything_Query2: TEverything_Query2 = Everything_Query2A;
-}
-  Everything_GetResultFileName: TEverything_GetResultFileName = Everything_GetResultFileNameA;
-  Everything_GetResultPath: TEverything_GetResultPath = Everything_GetResultPathA;
-  Everything_GetResultFullPathName: TEverything_GetResultFullPathName = Everything_GetResultFullPathNameA;
-  Everything_GetResultExtension: TEverything_GetResultExtension = Everything_GetResultExtensionA;
-  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileName = Everything_GetResultFileListFileNameA;
-  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileName = Everything_GetResultHighlightedFileNameA;
-  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPath = Everything_GetResultHighlightedPathA;
-  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileName = Everything_GetResultHighlightedFullPathAndFileNameA;
-  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileName = Everything_GetRunCountFromFileNameA;
-  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileName = Everything_SetRunCountFromFileNameA;
-  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileName = Everything_IncRunCountFromFileNameA;
-{$ENDIF}
+  // Ansi+Unicode version function
+  Everything_SetSearch: TEverything_SetSearch = {$IFDEF UNICODE}Everything_SetSearchW{$ELSE}Everything_SetSearchA{$ENDIF};
+  Everything_GetSearch: TEverything_GetSearch = {$IFDEF UNICODE}Everything_GetSearchW{$ELSE}Everything_GetSearchA{$ENDIF};
+  Everything_Query: TEverything_Query = {$IFDEF UNICODE}Everything_QueryW{$ELSE}Everything_QueryA{$ENDIF};
 
-  // Retrieves a Human-Readable error message corresponding to a given error code
-  function  Everything_GetErrorMessage(ACode: Integer): string;
-  // Retrieves the current version of the Everything SDK
-  function  Everything_GetVersion: string;
+//  Everything_Query2: TEverything_Query2 = {$IFDEF UNICODE}Everything_Query2W{$ELSE}Everything_Query2A{$ENDIF};
+
+  Everything_GetResultFileName: TEverything_GetResultFileName = {$IFDEF UNICODE}Everything_GetResultFileNameW{$ELSE}Everything_GetResultFileNameA{$ENDIF};
+  Everything_GetResultPath: TEverything_GetResultPath = {$IFDEF UNICODE}Everything_GetResultPathW{$ELSE}Everything_GetResultPathA{$ENDIF};
+  Everything_GetResultFullPathName: TEverything_GetResultFullPathName = {$IFDEF UNICODE}Everything_GetResultFullPathNameW{$ELSE}Everything_GetResultFullPathNameA{$ENDIF};
+  Everything_GetResultExtension: TEverything_GetResultExtension = {$IFDEF UNICODE}Everything_GetResultExtensionW{$ELSE}Everything_GetResultExtensionA{$ENDIF};
+  Everything_GetResultFileListFileName: TEverything_GetResultFileListFileName = {$IFDEF UNICODE}Everything_GetResultFileListFileNameW{$ELSE}Everything_GetResultFileListFileNameA{$ENDIF};
+  Everything_GetResultHighlightedFileName: TEverything_GetResultHighlightedFileName = {$IFDEF UNICODE}Everything_GetResultHighlightedFileNameW{$ELSE}Everything_GetResultHighlightedFileNameA{$ENDIF};
+  Everything_GetResultHighlightedPath: TEverything_GetResultHighlightedPath = {$IFDEF UNICODE}Everything_GetResultHighlightedPathW{$ELSE}Everything_GetResultHighlightedPathA{$ENDIF};
+  Everything_GetResultHighlightedFullPathAndFileName: TEverything_GetResultHighlightedFullPathAndFileName = {$IFDEF UNICODE}Everything_GetResultHighlightedFullPathAndFileNameW{$ELSE}Everything_GetResultHighlightedFullPathAndFileNameA{$ENDIF};
+  Everything_GetRunCountFromFileName: TEverything_GetRunCountFromFileName = {$IFDEF UNICODE}Everything_GetRunCountFromFileNameW{$ELSE}Everything_GetRunCountFromFileNameA{$ENDIF};
+  Everything_SetRunCountFromFileName: TEverything_SetRunCountFromFileName = {$IFDEF UNICODE}Everything_SetRunCountFromFileNameW{$ELSE}Everything_SetRunCountFromFileNameA{$ENDIF};
+  Everything_IncRunCountFromFileName: TEverything_IncRunCountFromFileName = {$IFDEF UNICODE}Everything_IncRunCountFromFileNameW{$ELSE}Everything_IncRunCountFromFileNameA{$ENDIF};
 
 implementation
 
