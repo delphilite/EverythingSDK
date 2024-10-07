@@ -1,0 +1,11 @@
+{
+	"id": "{E6159C6A-F401-4BBA-A8B5-DFFA64EF6B56}",
+	"name": "EverythingSDK",
+	"picture": "Ref\\Doc\\Logo.png",
+	"license_type": "MPL-2.0",
+	"license_file": "License",
+	"platforms": "Win32;Win64",
+	"first_version": "1.4.0",
+	"package_compiler_min": 23,
+	"compiler_min": 23
+}

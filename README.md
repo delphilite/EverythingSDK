@@ -1,4 +1,9 @@
 # EverythingSDK
+![Version](https://img.shields.io/badge/version-v1.4.0-yellow.svg)
+![License](https://img.shields.io/github/license/delphilite/EverythingSDK)
+![Lang](https://img.shields.io/github/languages/top/delphilite/EverythingSDK.svg)
+![stars](https://img.shields.io/github/stars/delphilite/EverythingSDK.svg)
+
 EverythingSDK is a [Delphi](http://www.embarcadero.com/products/delphi) client library for [Voidtools' Everything](https://www.voidtools.com/) search engine. It supports both dynamic and static libraries from the native Everything SDK.
 
 Everything is a powerful search engine that can index and search for files, folders, and other data on your Windows system. The official C++ SDK provides a way to access the Everything database and perform searches programmatically. This repository provides a Delphi translation of the C++ SDK, allowing Delphi developers to easily integrate Everything search functionality into their applications.
@@ -17,7 +22,7 @@ Everything service must be running on your machine.
 - Delphi XE2 or later.
 - Everything 1.4.1 or later.
 
-## Installation
+## Installation: Manual
 To install the EverythingSDK binding, follow these steps:
 
 1. Clone the repository:
@@ -27,6 +32,11 @@ To install the EverythingSDK binding, follow these steps:
 
 2. Add the EverythingSDK\Source directory to the project or IDE's search path.
 3. Make sure Everything is installed and running on your system.
+
+## Installation: Delphinus-Support
+EverythingSDK should now be listed in [Delphinus package manager](https://github.com/Memnarch/Delphinus/wiki/Installing-Delphinus).
+
+Be sure to restart Delphi after installing via Delphinus otherwise the units may not be found in your test projects.
 
 ## Usage
 Here's a simple example demonstrating how to use the EverythingSDK in a Delphi application:

@@ -1,0 +1,31 @@
+{
+	"search_pathes": [
+		{
+			"pathes": "Source",
+			"platforms": "Win32;Win64"
+		}
+	],
+	"browsing_pathes": [
+		{
+			"pathes": "Source",
+			"platforms": "Win32;Win64"
+		}
+	],
+	"source_folders": [
+		{
+			"folder": "Source",
+			"base": "",
+			"recursive": true,
+			"filter": "*;*.*"
+		}
+	],
+	"projects": [
+		{
+			"project": "Demos\\IPC\\Demo.dproj",
+			"compiler_min": 23
+		}, {
+			"project": "Demos\\SDK\\Demo.dproj",
+			"compiler_min": 23
+		}
+	]
+}
