@@ -316,7 +316,13 @@ const
 implementation
 
 uses
-  Messages, ShellAPI, WinSvc, EverythingIPC;
+  Messages, ShellAPI,
+{$IFDEF FPC}
+  JwaWinSvc,
+{$ELSE}
+  WinSvc,
+{$ENDIF FPC}
+  EverythingIPC;
 
 type
   TEverythingErrorInfo = record
@@ -2655,7 +2661,7 @@ end;
 
 function _Everything_IsValidResultIndex(dwIndex: DWORD): BOOL;
 begin
-  Result := (dwIndex >= 0) and (dwIndex < _Everything_GetNumResults);
+  Result := {(dwIndex >= 0) and} (dwIndex < _Everything_GetNumResults);
 end;
 
 function _Everything_GetRequestData(dwIndex: DWORD; dwRequestType: DWORD): Pointer;
@@ -2835,7 +2841,7 @@ begin
   begin
     if dwRequestType = EVERYTHING_REQUEST_HIGHLIGHTED_FULL_PATH_AND_FILE_NAME then
       Exit(p);
-
+{
     len := PDWORD(p)^;
     Inc(p, SizeOf(DWORD));
 
@@ -2843,6 +2849,7 @@ begin
       Inc(p, (len + 1) * SizeOf(WCHAR))
     else
       Inc(p, (len + 1) * SizeOf(AnsiChar));
+}
   end;
 
   Result := nil;
@@ -3278,13 +3285,13 @@ var
   process_handle: THandle;
   scm_handle: SC_HANDLE;
   service_handle: SC_HANDLE;
-  service_config: LPQUERY_SERVICE_CONFIG;
+  service_config: LPQUERY_SERVICE_CONFIGW;
   bytes_needed: DWORD;
   filename_wbuf: array[0..MAX_PATH-1] of WideChar;
   p: PWideChar;
   d: PWideChar;
   status_process: SERVICE_STATUS_PROCESS;
-  sei: SHELLEXECUTEINFO;
+  sei: SHELLEXECUTEINFOW;
 begin
   // find the everything ipc window.
   everything_hwnd := FindWindow(PChar(EVERYTHING_IPC_WNDCLASS), nil);
@@ -3316,10 +3323,10 @@ begin
 
     if service_handle <> 0 then
     begin
-      service_config := LPQUERY_SERVICE_CONFIG(_Everything_Alloc(8192));
+      service_config := LPQUERY_SERVICE_CONFIGW(_Everything_Alloc(8192));
       if service_config <> nil then
       begin
-        if QueryServiceConfig(service_handle, service_config, 8192, bytes_needed) then
+        if QueryServiceConfigW(service_handle, service_config, 8192, bytes_needed) then
         begin
           if _Everything_StringLengthW(service_config.lpBinaryPathName) < MAX_PATH then
           begin
@@ -3365,7 +3372,7 @@ begin
               end;
 
               // stop service
-              if GetFileAttributes(filename_wbuf) <> INVALID_FILE_ATTRIBUTES then
+              if GetFileAttributesW(filename_wbuf) <> INVALID_FILE_ATTRIBUTES then
               begin
                 ZeroMemory(@sei, SizeOf(SHELLEXECUTEINFO));
 
@@ -3374,7 +3381,7 @@ begin
                 sei.lpParameters := '-stop-service';
                 sei.fMask := SEE_MASK_NOCLOSEPROCESS or SEE_MASK_FLAG_NO_UI;
 
-                if ShellExecuteEx(@sei) then
+                if ShellExecuteExW(@sei) then
                 begin
                   WaitForSingleObject(sei.hProcess, 60000);
                   CloseHandle(sei.hProcess);
