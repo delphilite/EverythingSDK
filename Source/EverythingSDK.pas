@@ -19,7 +19,6 @@
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
-{$WEAKPACKAGEUNIT}
 
 unit EverythingSDK;
 

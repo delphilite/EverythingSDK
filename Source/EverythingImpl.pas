@@ -19,7 +19,6 @@
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
-{$WEAKPACKAGEUNIT}
 
 unit EverythingImpl;
 
@@ -946,7 +945,7 @@ function _Everything_Query_Thread_Proc(param: Pointer): DWORD; stdcall;
 var
   everything_hwnd: HWND;
   wcex: TWndClassEx;
-  hwnd: WIndows.HWND;
+  hwnd: Windows.HWND;
   msg: TMsg;
 begin
   // find the everything ipc window.
